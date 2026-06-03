@@ -1,46 +1,49 @@
-/* الهوية البصرية وثيم منصة Jokh */
+/* الهوية البصرية الرسمية لمنصة Jokh */
 
 :root {
-    /* الخلفية الأساسية للمنصة (اللون الداكن الفخم) */
     --bg-main: #1e1f22;
     --bg-card: #2b2d31;
     --bg-input: #2b2d31;
-    
-    /* ألوان الحدود والفواصل */
     --border-color: rgba(63, 66, 72, 0.4);
-    --border-hover: rgba(88, 101, 242, 0.4);
-
-    /* التدرج اللوني الخاص بأزرار وهوية Jokh (الـ Gradient) */
+    
+    /* التدرج اللوني الفخم للأزرار */
     --gradient-start: #5865f2;
     --gradient-end: #4752c4;
     --gradient-hover-start: #4752c4;
     --gradient-hover-end: #3b42a4;
 
-    /* ألوان النصوص */
     --text-primary: #ffffff;
     --text-muted: #94a3b8;
-    --text-link: #5865f2;
-    --text-link-hover: #4752c4;
 }
 
-/* تنسيقات عامة مريحة للعين */
-body {
-    background-color: var(--bg-main);
-    color: var(--text-primary);
+/* فرض الخلفية الداكنة على الجسم بالكامل */
+html, body {
+    background-color: #1e1f22 !important;
+    color: #ffffff !important;
     font-family: system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-/* ستايل الأزرار بالتدرج اللوني الخاص بـ Jokh */
+/* ستايل الأزرار والشعار الحصري لـ Jokh */
 .btn-jokh {
-    background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+    background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%) !important;
+    color: #ffffff !important;
     transition: all 0.2s ease-in-out;
 }
 
 .btn-jokh:hover {
-    background: linear-gradient(135deg, var(--gradient-hover-start) 0%, var(--gradient-hover-end) 100%);
+    background: linear-gradient(135deg, #4752c4 0%, #3b42a4 100%) !important;
 }
 
-/* ستايل كرت اللوجو الدائري والمربع */
 .logo-box {
-    background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+    background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%) !important;
+    color: #ffffff !important;
+}
+
+/* ستايل حقول الإدخال لتبدو متناسقة */
+.input-jokh {
+    background-color: #2b2d31 !important;
+    border: 1px solid rgba(63, 66, 72, 0.4) !important;
+    color: #ffffff !important;
 }
