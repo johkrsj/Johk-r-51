@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jokh | إنشاء حساب</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { background-color: #1e1f22; font-family: system-ui, -apple-system, sans-serif; }
+        .btn-gradient { background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%); }
+        .btn-gradient:hover { background: linear-gradient(135deg, #4752c4 0%, #3b42a4 100%); }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen px-4 py-6">
+
+    <div class="w-full max-w-sm text-center space-y-8">
+        <div class="space-y-2">
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl btn-gradient text-white text-2xl font-black shadow-lg shadow-black/20">
+                J
+            </div>
+            <h2 class="text-2xl font-black text-white tracking-tight pt-2">إنشاء حساب في Jokh</h2>
+        </div>
+
+        <div id="alert-box" class="hidden p-3 rounded-xl text-sm text-center border"></div>
+
+        <form id="register-form" class="space-y-5 text-right">
+            <div class="space-y-4">
+                <div>
+                    <label for="email" class="block text-xs font-semibold text-gray-400 mb-1.5 mr-1">البريد الإلكتروني</label>
+                    <input id="email" type="email" required class="w-full px-4 py-3.5 bg-[#2b2d31] border border-[#3f4248]/40 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#5865f2]/50 text-left" placeholder="your@email.com" dir="ltr">
+                </div>
+                <div>
+                    <label for="password" class="block text-xs font-semibold text-gray-400 mb-1.5 mr-1">كلمة المرور</label>
+                    <input id="password" type="password" required class="w-full px-4 py-3.5 bg-[#2b2d31] border border-[#3f4248]/40 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-[#5865f2]/50 text-left" placeholder="••••••••" dir="ltr">
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <button type="submit" id="submit-btn" class="w-full py-3.5 px-4 rounded-xl text-white font-bold btn-gradient transition-all duration-200 transform active:scale-95 shadow-md">
+                    إنشاء
+                </button>
+            </div>
+        </form>
+
+        <div class="pt-2">
+            <a href="index.html" class="text-sm font-bold text-[#5865f2] hover:text-[#4752c4] underline">
+                لديك حساب بالفعل؟ تسجيل دخول
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://wbmfscfylbghwunvpskv.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndibWZzY2Z5bGJnaHd1bnZwc2t2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5MTMxMzUsImV4cCI6MjA1ODQ4OTEzNX0.b8nK6w5DAtx6K8_AmsD9pndfBvD-gZREhT-T3yJ9Aaw";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const form = document.getElementById('register-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const alertBox = document.getElementById('alert-box');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "جاري الإنشاء...";
+
+            const { data, error } = await supabase.auth.signUp({ email, password });
+            
+            if (error) {
+                alertBox.innerText = error.message;
+                alertBox.className = "p-3 rounded-xl text-sm text-center border block bg-rose-950/30 text-rose-400 border-rose-500/20";
+                submitBtn.disabled = false;
+                submitBtn.innerText = "إنشاء";
+            } else {
+                alertBox.innerText = "تم إنشاء الحساب بنجاح! تفقد بريدك لتأكيده.";
+                alertBox.className = "p-3 rounded-xl text-sm text-center border block bg-emerald-950/30 text-emerald-400 border-emerald-500/20";
+                submitBtn.disabled = false;
+                submitBtn.innerText = "إنشاء";
+            }
+        });
+    </script>
+</body>
+</html>
