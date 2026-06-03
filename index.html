@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jokh | تسجيل الدخول</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { background-color: #1e1f22; font-family: system-ui, -apple-system, sans-serif; }
@@ -57,6 +55,15 @@
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndibWZzY2Z5bGJnaHd1bnZwc2t2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5MTMxMzUsImV4cCI6MjA1ODQ4OTEzNX0.b8nK6w5DAtx6K8_AmsD9pndfBvD-gZREhT-T3yJ9Aaw";
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        // [سيشن وتذكر الدخول] فحص تلقائي أول ما تفتح الصفحة
+        window.addEventListener('load', async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                // إذا كان مسجل دخول مسبقاً، يطير تلقائياً لصفحة الهوم
+                window.location.href = "home.html";
+            }
+        });
+
         const form = document.getElementById('login-form');
         const submitBtn = document.getElementById('submit-btn');
         const alertBox = document.getElementById('alert-box');
@@ -77,7 +84,8 @@
                 submitBtn.disabled = false;
                 submitBtn.innerText = "دخول";
             } else {
-                window.location.href = "home.html"; // يوجّهه لصفحة الهوم بعد الدخول
+                // حفظ بيانات الجلسة في المتصفح والتوجيه فوراً
+                window.location.href = "home.html";
             }
         });
     </script>
