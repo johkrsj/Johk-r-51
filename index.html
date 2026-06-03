@@ -6,7 +6,30 @@
     <title>Jokh | تسجيل الدخول</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="theme.css">
+    
+    <style>
+        html, body {
+            background-color: #1e1f22 !important;
+            color: #ffffff !important;
+            margin: 0;
+            padding: 0;
+        }
+        .btn-jokh {
+            background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%) !important;
+            color: #ffffff !important;
+        }
+        .btn-jokh:hover {
+            background: linear-gradient(135deg, #4752c4 0%, #3b42a4 100%) !important;
+        }
+        .input-jokh {
+            background-color: #2b2d31 !important;
+            border: 1px solid rgba(63, 66, 72, 0.4) !important;
+            color: #ffffff !important;
+        }
+        .logo-box {
+            background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%) !important;
+        }
+    </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen px-4 py-6">
 
@@ -51,7 +74,6 @@
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndibWZzY2Z5bGJnaHd1bnZwc2t2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5MTMxMzUsImV4cCI6MjA1ODQ4OTEzNX0.b8nK6w5DAtx6K8_AmsD9pndfBvD-gZREhT-T3yJ9Aaw";
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Auto-login session checker
         window.addEventListener('load', async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) { window.location.href = "home.html"; }
