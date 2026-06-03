@@ -13,6 +13,7 @@
             color: #ffffff !important;
             margin: 0;
             padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
         }
         .logo-box {
             background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%) !important;
@@ -66,22 +67,26 @@
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         window.addEventListener('load', async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            
-            if (!session) {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                
+                if (!session) {
+                    window.location.replace("index.html");
+                } else {
+                    const user = session.user;
+                    document.getElementById('user-email').innerText = user.email;
+                    
+                    const fullName = user.user_metadata?.full_name || "عضو Jokh";
+                    const uName = user.user_metadata?.user_name || "---";
+                    
+                    document.getElementById('welcome-name').innerText = `مرحباً بك يا ${fullName}`;
+                    document.getElementById('user-username').innerText = `@${uName}`;
+                    document.getElementById('avatar-letter').innerText = fullName.charAt(0).toUpperCase();
+                    
+                    document.getElementById('profile-card').classList.remove('hidden');
+                }
+            } catch (err) {
                 window.location.replace("index.html");
-            } else {
-                const user = session.user;
-                document.getElementById('user-email').innerText = user.email;
-                
-                const fullName = user.user_metadata?.full_name || "عضو Jokh";
-                const uName = user.user_metadata?.user_name || "---";
-                
-                document.getElementById('welcome-name').innerText = `مرحباً بك يا ${fullName}`;
-                document.getElementById('user-username').innerText = `@${uName}`;
-                document.getElementById('avatar-letter').innerText = fullName.charAt(0).toUpperCase();
-                
-                document.getElementById('profile-card').classList.remove('hidden');
             }
         });
 
