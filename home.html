@@ -3,108 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jokh | الرئيسية</title>
-    <!-- Tailwind CSS -->
+    <title>Jokh</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* ألوان ديسكورد الداكنة الموحدة والمريحة للعين بالكامل */
         body {
-            background-color: #0d1117;
+            background-color: #1e1f22;
             font-family: system-ui, -apple-system, sans-serif;
         }
-        .jokh-nav {
-            background: rgba(22, 28, 36, 0.95);
-            border-bottom: 1px solid rgba(99, 102, 241, 0.15);
-        }
-        .feed-card {
-            background: rgba(22, 28, 36, 0.95);
-            border: 1px solid rgba(99, 102, 241, 0.1);
-        }
+        /* تدرج الأزرار بالأزرق والموفي الملكي الفخم حقت ديسكورد */
         .btn-gradient {
-            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 50%, #4f46e5 100%);
+            background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%);
         }
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #4752c4 0%, #3b42a4 100%);
+        }
+        /* لون النص للشعار */
         .text-gradient {
-            background: linear-gradient(135deg, #60a5fa, #818cf8);
+            background: linear-gradient(135deg, #94a3b8, #cbd5e1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
     </style>
 </head>
-<body class="text-gray-200 min-h-screen pb-12">
+<body class="flex flex-col items-center justify-center min-h-screen px-4 py-6">
 
-    <!-- شريط التنقل العلوي (Navigation Bar) -->
-    <nav class="sticky top-0 z-50 jokh-nav backdrop-blur px-4 py-4 shadow-lg shadow-black/20">
-        <div class="max-w-4xl mx-auto flex items-center justify-between">
-            <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="w-10 h-10 rounded-xl btn-gradient flex items-center justify-center text-white text-xl font-black shadow-md">
-                    J
-                </div>
-                <span class="text-xl font-bold tracking-tight text-gradient">Jokh</span>
+    <div id="auth-container" class="w-full max-w-sm text-center space-y-8">
+        <div class="space-y-2">
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl btn-gradient text-white text-2xl font-black shadow-lg shadow-black/20">
+                J
             </div>
-            
-            <!-- زر الخروج المؤقت لتجربة النظام -->
-            <button onclick="logout()" class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-rose-400 border border-gray-700 hover:border-rose-500/30 rounded-xl transition-all">
-                خروج
+            <h2 id="main-title" class="text-2xl font-black text-white tracking-tight pt-2">تسجيل دخول إلى Jokh</h2>
+        </div>
+
+        <div id="alert-box" class="hidden p-3 rounded-xl text-sm text-center border"></div>
+
+        <form id="auth-form" class="space-y-5 text-right">
+            <div class="space-y-4">
+                <div>
+                    <label for="email" class="block text-xs font-semibold text-gray-400 mb-1.5 mr-1">البريد الإلكتروني</label>
+                    <input id="email" name="email" type="email" required 
+                        class="w-full px-4 py-3.5 bg-[#2b2d31] border border-[#3f4248]/40 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#5865f2]/50 text-left" 
+                        placeholder="your@email.com" dir="ltr">
+                </div>
+                <div>
+                    <label for="password" class="block text-xs font-semibold text-gray-400 mb-1.5 mr-1">كلمة المرور</label>
+                    <input id="password" name="password" type="password" required 
+                        class="w-full px-4 py-3.5 bg-[#2b2d31] border border-[#3f4248]/40 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#5865f2]/50 text-left" 
+                        placeholder="••••••••" dir="ltr">
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <button type="submit" id="submit-btn" class="w-full py-3.5 px-4 rounded-xl text-white font-bold btn-gradient transition-all duration-200 transform active:scale-95 shadow-md">
+                    دخول
+                </button>
+            </div>
+        </form>
+
+        <div class="pt-2">
+            <button id="toggle-btn" class="text-sm font-bold text-[#5865f2] hover:text-[#4752c4] focus:outline-none underline">
+                إنشاء حساب جديد
             </button>
         </div>
-    </nav>
+    </div>
 
-    <!-- المحتوى الرئيسي (Feed) -->
-    <main class="max-w-xl mx-auto px-4 mt-6 space-y-6">
-        
-        <!-- صندوق نشر جديد تجريبي -->
-        <div class="p-4 rounded-2xl feed-card shadow-xl">
-            <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-sm font-bold text-indigo-300 border border-indigo-500/20">
-                    أنا
-                </div>
-                <input type="text" placeholder="ماذا يدور في ذهنك الإبداعي؟" class="w-full bg-gray-950/50 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/50 focus:border-transparent">
-            </div>
-            <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-800/60">
-                <button class="text-xs text-indigo-400 hover:text-indigo-300 font-medium flex items-center space-x-1 space-x-reverse">
-                    <span>🖼️</span> <span>إضافة صورة</span>
-                </button>
-                <button class="px-4 py-1.5 rounded-lg text-xs font-medium text-white btn-gradient opacity-80 hover:opacity-100 transition-all">
-                    نشر
-                </button>
-            </div>
+    <div id="profile-container" class="hidden w-full max-w-sm space-y-6 text-center">
+        <div class="space-y-1">
+            <h2 class="text-2xl font-black text-white">الملف الشخصي</h2>
+            <p class="text-xs text-gray-400">مساحتك الخاصة على Jokh</p>
         </div>
 
-        <!-- منشور تجريبي 1 (منشور إبداعي) -->
-        <div class="rounded-2xl feed-card overflow-hidden shadow-xl">
-            <div class="p-4 flex items-center justify-between">
-                <div class="flex items-center space-x-3 space-x-reverse">
-                    <div class="w-10 h-10 rounded-full btn-gradient flex items-center justify-center text-sm font-black text-white">
-                        TS
+        <div class="space-y-6 pt-4">
+            <div class="relative inline-block">
+                <div class="w-24 h-24 rounded-full btn-gradient p-1 shadow-xl mx-auto flex items-center justify-center">
+                    <div class="w-full h-full bg-[#1e1f22] rounded-full flex items-center justify-center text-white text-3xl font-black">
+                        J
                     </div>
-                    <div>
-                        <h4 class="text-sm font-bold text-white">Theeb_Sands</h4>
-                        <span class="text-[10px] text-gray-500">منذ ساعتين</span>
+                </div>
+                <span class="absolute bottom-0 right-1/2 translate-x-10 bg-[#5865f2] text-[10px] text-white px-2 py-0.5 rounded-full font-bold">مبدع</span>
+            </div>
+
+            <div class="text-right space-y-4 max-w-xs mx-auto">
+                <div>
+                    <span class="block text-xs font-semibold text-gray-400 mb-1">البريد الإلكتروني</span>
+                    <div id="user-display-email" class="w-full px-4 py-3 bg-[#2b2d31] border border-[#3f4248]/40 rounded-xl text-gray-300 text-left" dir="ltr">
+                        ---
+                    </div>
+                </div>
+                <div>
+                    <span class="block text-xs font-semibold text-gray-400 mb-1">حالة الحساب</span>
+                    <div class="w-full px-4 py-3 bg-[#2b2d31] border border-[#3f4248]/40 rounded-xl text-emerald-400 flex items-center justify-between">
+                        <span>نشط وجاهز</span>
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                     </div>
                 </div>
             </div>
-            <!-- نص المنشور -->
-            <p class="px-4 pb-3 text-sm text-gray-300 leading-relaxed">
-                الخطوات الأولى في رسم معالم الفصل الأول من مشروع المانجا الجديد. الرمال تخفي الكثير من الأسرار، والذيب ما يهرول عبث! ✒️🏜️
-            </p>
-            <!-- صورة المنشور التجريبية -->
-            <div class="bg-gray-950 flex items-center justify-center h-64 border-y border-gray-800/50">
-                <span class="text-gray-600 text-sm">مكان عرض صورة المانجا أو المنشور الإبداعي</span>
-            </div>
-            <!-- أزرار التفاعل -->
-            <div class="p-3 bg-gray-900/20 flex items-center justify-around text-xs text-gray-400 border-t border-gray-800/40">
-                <button class="hover:text-indigo-400 flex items-center space-x-1 space-x-reverse"><span>🔥</span> <span>إعجاب</span></button>
-                <button class="hover:text-indigo-400 flex items-center space-x-1 space-x-reverse"><span>💬</span> <span>تعليق</span></button>
-                <button class="hover:text-indigo-400 flex items-center space-x-1 space-x-reverse"><span>🔄</span> <span>مشاركة</span></button>
+
+            <div class="pt-4 max-w-xs mx-auto">
+                <button onclick="window.location.reload()" class="w-full py-3 px-4 rounded-xl text-sm font-bold bg-[#2b2d31] text-gray-300 border border-[#3f4248]/60 hover:bg-[#313338] transition-all">
+                    تسجيل الخروج
+                </button>
             </div>
         </div>
-
-    </main>
+    </div>
 
     <script>
-        // دالة الخروج للعودة لصفحة الدخول
-        function logout() {
-            window.location.href = "index.html";
+        const SUPABASE_URL = "https://wbmfscfylbghwunvpskv.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndibWZzY2Z5bGJnaHd1bnZwc2t2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5MTMxMzUsImV4cCI6MjA1ODQ4OTEzNX0.b8nK6w5DAtx6K8_AmsD9pndfBvD-gZREhT-T3yJ9Aaw";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const form = document.getElementById('auth-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const toggleBtn = document.getElementById('toggle-btn');
+        const mainTitle = document.getElementById('main-title');
+        const alertBox = document.getElementById('alert-box');
+        
+        const authContainer = document.getElementById('auth-container');
+        const profileContainer = document.getElementById('profile-container');
+        const userDisplayEmail = document.getElementById('user-display-email');
+
+        let isLoginMode = true;
+
+        function showAlert(message, isSuccess = false) {
+            alertBox.innerText = message;
+            alertBox.className = `p-3 rounded-xl text-sm text-center border block ${
+                isSuccess 
+                ? 'bg-emerald-950/30 text-emerald-400 border-emerald-500/20' 
+                : 'bg-rose-950/30 text-rose-400 border-rose-500/20'
+            }`;
         }
+
+        // التبديل السلس بالصياغة المباشرة حقتك
+        toggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            isLoginMode = !isLoginMode;
+            alertBox.classList.add('hidden');
+            
+            if (isLoginMode) {
+                mainTitle.innerText = "تسجيل دخول إلى Jokh";
+                submitBtn.innerText = "دخول";
+                toggleBtn.innerText = "إنشاء حساب جديد";
+            } else {
+                mainTitle.innerText = "إنشاء حساب في Jokh";
+                submitBtn.innerText = "إنشاء";
+                toggleBtn.innerText = "تسجيل دخول";
+            }
+        });
+
+        // معالجة البيانات والربط مع Supabase
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if(!email || !password) {
+                showAlert("فضلاً، أكمل الحقول الأساسية.");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = isLoginMode ? "جاري الدخول..." : "جاري الإنشاء...";
+
+            if (isLoginMode) {
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                
+                if (error) {
+                    showAlert("خطأ: البيانات غير صحيحة.", false);
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "دخول";
+                } else {
+                    userDisplayEmail.innerText = data.user.email;
+                    authContainer.classList.add('hidden');
+                    profileContainer.classList.remove('hidden');
+                }
+            } else {
+                // إصلاح أزمة إنشاء الحساب بشكل نهائي وقاطع
+                const { data, error } = await supabase.auth.signUp({ email, password });
+                
+                if (error) {
+                    showAlert(error.message, false);
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "إنشاء";
+                } else {
+                    if(data?.user) {
+                        userDisplayEmail.innerText = data.user.email;
+                        authContainer.classList.add('hidden');
+                        profileContainer.classList.remove('hidden');
+                    } else {
+                        showAlert("تم الحفظ بنجاح! تفقد بريدك الإلكتروني لتأكيد الحساب.", true);
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "إنشاء";
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
