@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jokh | تسجيل الدخول</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     
     <style>
         html, body {
@@ -43,7 +43,7 @@
 
         <div id="alert-box" class="hidden p-3 rounded-xl text-sm text-center border"></div>
 
-        <form id="login-form" class="space-y-5 text-right">
+        <form id="login-form" onsubmit="return false;" class="space-y-5 text-right">
             <div class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1.5 mr-1">البريد الإلكتروني</label>
@@ -56,7 +56,7 @@
             </div>
 
             <div class="pt-2">
-                <button type="submit" id="submit-btn" class="w-full py-3.5 px-4 rounded-xl text-white font-bold btn-jokh transition-all duration-200 transform active:scale-95 shadow-md">
+                <button type="button" id="submit-btn" class="w-full py-3.5 px-4 rounded-xl text-white font-bold btn-jokh transition-all duration-200 transform active:scale-95 shadow-md">
                     دخول
                 </button>
             </div>
@@ -72,34 +72,92 @@
     <script>
         const SUPABASE_URL = "https://wbmfscfylbghwunvpskv.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndibWZzY2Z5bGJnaHd1bnZwc2t2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5MTMxMzUsImV4cCI6MjA1ODQ4OTEzNX0.b8nK6w5DAtx6K8_AmsD9pndfBvD-gZREhT-T3yJ9Aaw";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        window.addEventListener('load', async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) { window.location.href = "home.html"; }
-        });
-
-        const form = document.getElementById('login-form');
+        
+        let supabase;
         const submitBtn = document.getElementById('submit-btn');
         const alertBox = document.getElementById('alert-box');
 
-        form.addEventListener('submit', async (e) => {
+        function showAlert(message, isError = true) {
+            alertBox.innerText = message;
+            if (isError) {
+                alertBox.className = "p-3 rounded-xl text-sm text-center border block bg-rose-950/30 text-rose-400 border-rose-500/20";
+            } else {
+                alertBox.className = "p-3 rounded-xl text-sm text-center border block bg-emerald-950/30 text-emerald-400 border-emerald-500/20";
+            }
+        }
+
+        // تهيئة Supabase بأمان وتأكيد التحميل
+        try {
+            supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        } catch (err) {
+            showAlert("فشل تحميل مكتبة Supabase. يرجى التحقق من الاتصال.");
+        }
+
+        // فحص الجلسة عند فتح الصفحة
+        window.addEventListener('load', async () => {
+            if (!supabase) return;
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) { 
+                    window.location.replace("home.html"); 
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        });
+
+        // ربط الحدث بالزر مباشرة لتجنب مشاكل الفورم التقليدي
+        submitBtn.addEventListener('click', async (e) => {
             e.preventDefault();
+            e.stopPropagation();
+            
+            if (!supabase) {
+                showAlert("النظام غير جاهز بعد، يرجى تحديث الصفحة.");
+                return;
+            }
+
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
 
+            if (!email || !password) {
+                showAlert("الرجاء تعبئة جميع الحقول أولاً.");
+                return;
+            }
+
+            // قفل الزر وتحديث النص
             submitBtn.disabled = true;
             submitBtn.innerText = "جاري الدخول...";
+            alertBox.classList.add('hidden');
 
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-            
-            if (error) {
-                alertBox.innerText = "خطأ: البيانات غير صحيحة.";
-                alertBox.className = "p-3 rounded-xl text-sm text-center border block bg-rose-950/30 text-rose-400 border-rose-500/20";
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                
+                if (error) {
+                    let errorMsg = "فشل تسجيل الدخول: ";
+                    if (error.message === "Invalid login credentials") {
+                        errorMsg += "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+                    } else if (error.message === "Email not confirmed") {
+                        errorMsg += "الرجاء تأكيد حسابك من البريد الإلكتروني أولاً.";
+                    } else {
+                        errorMsg += error.message;
+                    }
+                    showAlert(errorMsg, true);
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "دخول";
+                } else if (data.session) {
+                    showAlert("تم تسجيل الدخول بنجاح! جاري التوجيه...", false);
+                    setTimeout(() => {
+                        window.location.replace("home.html");
+                    }, 500);
+                } else {
+                    showAlert("حدث خطأ في الاستجابة، يرجى المحاولة مرة أخرى.");
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "دخول";
+                }
+            } catch (catchError) {
+                showAlert("خطأ في النظام: " + catchError.message);
                 submitBtn.disabled = false;
                 submitBtn.innerText = "دخول";
-            } else {
-                window.location.href = "home.html";
             }
         });
     </script>
