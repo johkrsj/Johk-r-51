@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jokh | الرئيسية</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #0d1117;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .jokh-nav {
+            background: rgba(22, 28, 36, 0.95);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+        }
+        .feed-card {
+            background: rgba(22, 28, 36, 0.95);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 50%, #4f46e5 100%);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #60a5fa, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="text-gray-200 min-h-screen pb-12">
+
+    <!-- شريط التنقل العلوي (Navigation Bar) -->
+    <nav class="sticky top-0 z-50 jokh-nav backdrop-blur px-4 py-4 shadow-lg shadow-black/20">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <div class="w-10 h-10 rounded-xl btn-gradient flex items-center justify-center text-white text-xl font-black shadow-md">
+                    J
+                </div>
+                <span class="text-xl font-bold tracking-tight text-gradient">Jokh</span>
+            </div>
+            
+            <!-- زر الخروج المؤقت لتجربة النظام -->
+            <button onclick="logout()" class="px-4 py-2 text-sm font-medium text-gray-400 hover:text-rose-400 border border-gray-700 hover:border-rose-500/30 rounded-xl transition-all">
+                خروج
+            </button>
+        </div>
+    </nav>
+
+    <!-- المحتوى الرئيسي (Feed) -->
+    <main class="max-w-xl mx-auto px-4 mt-6 space-y-6">
+        
+        <!-- صندوق نشر جديد تجريبي -->
+        <div class="p-4 rounded-2xl feed-card shadow-xl">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-sm font-bold text-indigo-300 border border-indigo-500/20">
+                    أنا
+                </div>
+                <input type="text" placeholder="ماذا يدور في ذهنك الإبداعي؟" class="w-full bg-gray-950/50 border border-gray-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/50 focus:border-transparent">
+            </div>
+            <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-800/60">
+                <button class="text-xs text-indigo-400 hover:text-indigo-300 font-medium flex items-center space-x-1 space-x-reverse">
+                    <span>🖼️</span> <span>إضافة صورة</span>
+                </button>
+                <button class="px-4 py-1.5 rounded-lg text-xs font-medium text-white btn-gradient opacity-80 hover:opacity-100 transition-all">
+                    نشر
+                </button>
+            </div>
+        </div>
+
+        <!-- منشور تجريبي 1 (منشور إبداعي) -->
+        <div class="rounded-2xl feed-card overflow-hidden shadow-xl">
+            <div class="p-4 flex items-center justify-between">
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <div class="w-10 h-10 rounded-full btn-gradient flex items-center justify-center text-sm font-black text-white">
+                        TS
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-white">Theeb_Sands</h4>
+                        <span class="text-[10px] text-gray-500">منذ ساعتين</span>
+                    </div>
+                </div>
+            </div>
+            <!-- نص المنشور -->
+            <p class="px-4 pb-3 text-sm text-gray-300 leading-relaxed">
+                الخطوات الأولى في رسم معالم الفصل الأول من مشروع المانجا الجديد. الرمال تخفي الكثير من الأسرار، والذيب ما يهرول عبث! ✒️🏜️
+            </p>
+            <!-- صورة المنشور التجريبية -->
+            <div class="bg-gray-950 flex items-center justify-center h-64 border-y border-gray-800/50">
+                <span class="text-gray-600 text-sm">مكان عرض صورة المانجا أو المنشور الإبداعي</span>
+            </div>
+            <!-- أزرار التفاعل -->
+            <div class="p-3 bg-gray-900/20 flex items-center justify-around text-xs text-gray-400 border-t border-gray-800/40">
+                <button class="hover:text-indigo-400 flex items-center space-x-1 space-x-reverse"><span>🔥</span> <span>إعجاب</span></button>
+                <button class="hover:text-indigo-400 flex items-center space-x-1 space-x-reverse"><span>💬</span> <span>تعليق</span></button>
+                <button class="hover:text-indigo-400 flex items-center space-x-1 space-x-reverse"><span>🔄</span> <span>مشاركة</span></button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // دالة الخروج للعودة لصفحة الدخول
+        function logout() {
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
