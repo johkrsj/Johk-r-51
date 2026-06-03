@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jokh</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         /* ألوان ديسكورد الداكنة الموحدة والمريحة للعين بالكامل */
@@ -29,12 +31,13 @@
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen px-4 py-6">
 
+    <!-- أولاً: واجهة الدخول والتسجيل المباشرة -->
     <div id="auth-container" class="w-full max-w-sm text-center space-y-8">
         <div class="space-y-2">
             <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl btn-gradient text-white text-2xl font-black shadow-lg shadow-black/20">
                 J
             </div>
-            <h2 id="main-title" class="text-2xl font-black text-white tracking-tight pt-2">تسجيل دخول إلى Jokh</h2>
+            <h2 id="main-title" class="text-2xl font-black text-white tracking-tight pt-2">تسجيل الدخول إلى Jokh</h2>
         </div>
 
         <div id="alert-box" class="hidden p-3 rounded-xl text-sm text-center border"></div>
@@ -69,6 +72,7 @@
         </div>
     </div>
 
+    <!-- ثانياً: شاشة البروفايل الفخمة -->
     <div id="profile-container" class="hidden w-full max-w-sm space-y-6 text-center">
         <div class="space-y-1">
             <h2 class="text-2xl font-black text-white">الملف الشخصي</h2>
@@ -135,7 +139,6 @@
             }`;
         }
 
-        // التبديل السلس بالصياغة المباشرة حقتك
         toggleBtn.addEventListener('click', (e) => {
             e.preventDefault();
             isLoginMode = !isLoginMode;
@@ -148,11 +151,10 @@
             } else {
                 mainTitle.innerText = "إنشاء حساب في Jokh";
                 submitBtn.innerText = "إنشاء";
-                toggleBtn.innerText = "تسجيل دخول";
+                toggleBtn.innerText = "تسجيل الدخول";
             }
         });
 
-        // معالجة البيانات والربط مع Supabase
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -180,7 +182,6 @@
                     profileContainer.classList.remove('hidden');
                 }
             } else {
-                // إصلاح أزمة إنشاء الحساب بشكل نهائي وقاطع
                 const { data, error } = await supabase.auth.signUp({ email, password });
                 
                 if (error) {
