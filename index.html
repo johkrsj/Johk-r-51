@@ -86,33 +86,25 @@
             }
         }
 
-        // تهيئة Supabase بأمان وتأكيد التحميل
         try {
             supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         } catch (err) {
-            showAlert("فشل تحميل مكتبة Supabase. يرجى التحقق من الاتصال.");
+            showAlert("فشل تحميل نظام سوبابيس الأساسي.");
         }
 
-        // فحص الجلسة عند فتح الصفحة
         window.addEventListener('load', async () => {
             if (!supabase) return;
             try {
                 const { data: { session } } = await supabase.auth.getSession();
-                if (session) { 
-                    window.location.replace("home.html"); 
-                }
-            } catch (e) {
-                console.log(e);
-            }
+                if (session) { window.location.replace("home.html"); }
+            } catch (e) {}
         });
 
-        // ربط الحدث بالزر مباشرة لتجنب مشاكل الفورم التقليدي
         submitBtn.addEventListener('click', async (e) => {
             e.preventDefault();
-            e.stopPropagation();
             
             if (!supabase) {
-                showAlert("النظام غير جاهز بعد، يرجى تحديث الصفحة.");
+                showAlert("النظام غير جاهز، أعد تحميل الصفحة.");
                 return;
             }
 
@@ -124,7 +116,6 @@
                 return;
             }
 
-            // قفل الزر وتحديث النص
             submitBtn.disabled = true;
             submitBtn.innerText = "جاري الدخول...";
             alertBox.classList.add('hidden');
@@ -135,9 +126,9 @@
                 if (error) {
                     let errorMsg = "فشل تسجيل الدخول: ";
                     if (error.message === "Invalid login credentials") {
-                        errorMsg += "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+                        errorMsg += "الإيميل أو الباسورد غلط.";
                     } else if (error.message === "Email not confirmed") {
-                        errorMsg += "الرجاء تأكيد حسابك من البريد الإلكتروني أولاً.";
+                        errorMsg += "تأكد من تفعيل الحساب من إيميلك أولاً.";
                     } else {
                         errorMsg += error.message;
                     }
@@ -145,17 +136,11 @@
                     submitBtn.disabled = false;
                     submitBtn.innerText = "دخول";
                 } else if (data.session) {
-                    showAlert("تم تسجيل الدخول بنجاح! جاري التوجيه...", false);
-                    setTimeout(() => {
-                        window.location.replace("home.html");
-                    }, 500);
-                } else {
-                    showAlert("حدث خطأ في الاستجابة، يرجى المحاولة مرة أخرى.");
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = "دخول";
+                    showAlert("تم الدخول بنجاح! جاري التوجيه...", false);
+                    setTimeout(() => { window.location.replace("home.html"); }, 400);
                 }
-            } catch (catchError) {
-                showAlert("خطأ في النظام: " + catchError.message);
+            } catch (err) {
+                showAlert("خطأ في الاتصال: " + err.message);
                 submitBtn.disabled = false;
                 submitBtn.innerText = "دخول";
             }
