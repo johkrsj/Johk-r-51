@@ -6,17 +6,13 @@
     <title>Jokh | إنشاء حساب</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body { background-color: #1e1f22; font-family: system-ui, -apple-system, sans-serif; }
-        .btn-gradient { background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%); }
-        .btn-gradient:hover { background: linear-gradient(135deg, #4752c4 0%, #3b42a4 100%); }
-    </style>
+    <link rel="stylesheet" href="theme.css">
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen px-4 py-6">
 
     <div class="w-full max-w-sm text-center space-y-6">
         <div class="space-y-2">
-            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl btn-gradient text-white text-2xl font-black shadow-lg shadow-black/20">
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl logo-box text-white text-2xl font-black shadow-lg shadow-black/20">
                 J
             </div>
             <h2 class="text-2xl font-black text-white tracking-tight pt-1">إنشاء حساب في Jokh</h2>
@@ -56,7 +52,7 @@
             </div>
 
             <div class="pt-2">
-                <button type="submit" id="submit-btn" class="w-full py-3.5 px-4 rounded-xl text-white font-bold btn-gradient transition-all duration-200 transform active:scale-95 shadow-md">
+                <button type="submit" id="submit-btn" class="w-full py-3.5 px-4 rounded-xl text-white font-bold btn-jokh transition-all duration-200 transform active:scale-95 shadow-md">
                     إنشاء
                 </button>
             </div>
