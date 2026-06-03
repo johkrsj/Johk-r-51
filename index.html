@@ -51,7 +51,7 @@
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndibWZzY2Z5bGJnaHd1bnZwc2t2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5MTMxMzUsImV4cCI6MjA1ODQ4OTEzNX0.b8nK6w5DAtx6K8_AmsD9pndfBvD-gZREhT-T3yJ9Aaw";
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Check active session on load
+        // Auto-login session checker
         window.addEventListener('load', async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) { window.location.href = "home.html"; }
