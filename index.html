@@ -13,6 +13,7 @@
             color: #ffffff !important;
             margin: 0;
             padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
         }
         .btn-jokh {
             background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%) !important;
@@ -89,7 +90,7 @@
         try {
             supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         } catch (err) {
-            showAlert("فشل تحميل نظام سوبابيس الأساسي.");
+            showAlert("فشل في الاتصال بنظام قاعدة البيانات الأساسي.");
         }
 
         window.addEventListener('load', async () => {
@@ -126,7 +127,7 @@
                 if (error) {
                     let errorMsg = "فشل تسجيل الدخول: ";
                     if (error.message === "Invalid login credentials") {
-                        errorMsg += "الإيميل أو الباسورد غلط.";
+                        errorMsg += "الإيميل أو كلمة المرور غير صحيحة.";
                     } else if (error.message === "Email not confirmed") {
                         errorMsg += "تأكد من تفعيل الحساب من إيميلك أولاً.";
                     } else {
@@ -140,7 +141,7 @@
                     setTimeout(() => { window.location.replace("home.html"); }, 400);
                 }
             } catch (err) {
-                showAlert("خطأ في الاتصال: " + err.message);
+                showAlert("خطأ غير متوقع: " + err.message);
                 submitBtn.disabled = false;
                 submitBtn.innerText = "دخول";
             }
