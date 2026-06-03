@@ -6,10 +6,7 @@
     <title>Jokh | الملف الشخصي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body { background-color: #1e1f22; font-family: system-ui, -apple-system, sans-serif; }
-        .btn-gradient { background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%); }
-    </style>
+    <link rel="stylesheet" href="theme.css">
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen px-4 py-6">
 
@@ -21,7 +18,7 @@
 
         <div class="space-y-6 pt-4">
             <div class="relative inline-block">
-                <div class="w-24 h-24 rounded-full btn-gradient p-1 shadow-xl mx-auto flex items-center justify-center">
+                <div class="w-24 h-24 rounded-full logo-box p-1 shadow-xl mx-auto flex items-center justify-center">
                     <div id="avatar-letter" class="w-full h-full bg-[#1e1f22] rounded-full flex items-center justify-center text-white text-3xl font-black">
                         J
                     </div>
@@ -57,15 +54,12 @@
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndibWZzY2Z5bGJnaHd1bnZwc2t2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5MTMxMzUsImV4cCI6MjA1ODQ4OTEzNX0.b8nK6w5DAtx6K8_AmsD9pndfBvD-gZREhT-T3yJ9Aaw";
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // التحقق عند فتح الملف الشخصي وطرد غير المسجلين وحفظ الكوكيز
         window.addEventListener('load', async () => {
             const { data: { session } } = await supabase.auth.getSession();
             
             if (!session) {
-                // إذا حاول يدخل بدون كوكيز أو سيشن، يرجع لصفحة الدخول
                 window.location.href = "index.html";
             } else {
-                // سحب البيانات وعرضها فوراً بشكل ديناميكي فخم
                 const user = session.user;
                 document.getElementById('user-email').innerText = user.email;
                 
@@ -80,7 +74,6 @@
             }
         });
 
-        // تفعيل زر تسجيل الخروج الحقيقي لمسح الكوكيز والسيشن
         document.getElementById('logout-btn').addEventListener('click', async () => {
             await supabase.auth.signOut();
             window.location.href = "index.html";
