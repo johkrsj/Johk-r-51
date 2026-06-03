@@ -1,14 +1,11 @@
-/* Jokh Platform - Global Theme Styles */
+/* Jokh Platform - Design & Identity System */
 
 :root {
-    --bg-main: #1e1f22;
-    --bg-card: #2b2d31;
-    --bg-input: #2b2d31;
-    --border-color: rgba(63, 66, 72, 0.4);
-    --gradient-start: #5865f2;
-    --gradient-end: #4752c4;
-    --gradient-hover-start: #4752c4;
-    --gradient-hover-end: #3b42a4;
+    --primary-color: #5865f2;
+    --primary-hover: #4752c4;
+    --bg-dark-main: #1e1f22;
+    --bg-dark-card: #2b2d31;
+    --border-smooth: rgba(63, 66, 72, 0.4);
 }
 
 html, body {
@@ -19,6 +16,7 @@ html, body {
     padding: 0;
 }
 
+/* Jokh Custom UI Elements */
 .btn-jokh {
     background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%) !important;
     color: #ffffff !important;
