@@ -13,6 +13,7 @@
             color: #ffffff !important;
             margin: 0;
             padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
         }
         .btn-jokh {
             background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%) !important;
@@ -47,7 +48,7 @@
             <div class="space-y-3">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 mr-1">الاسم</label>
-                    <input id="display-name" type="text" required class="w-full px-4 py-3 input-jokh rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5865f2]/50 text-right" placeholder="الاسم">
+                    <input id="display-name" type="text" required class="w-full px-4 py-3 input-jokh rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5865f2]/50 text-right" placeholder="الاسم الشخصي">
                 </div>
 
                 <div>
@@ -110,7 +111,7 @@
             const confirmPassword = document.getElementById('confirm-password').value;
 
             if (!displayName || !username || !email || !password) {
-                displayAlert("الرجاء تعبئة كافة الحقول.");
+                displayAlert("الرجاء تعبئة كافة الحقول المطلوب.");
                 return;
             }
 
@@ -122,18 +123,24 @@
             submitBtn.disabled = true;
             submitBtn.innerText = "جاري الإنشاء...";
 
-            const { data, error } = await supabase.auth.signUp({
-                email: email,
-                password: password,
-                options: { data: { full_name: displayName, user_name: username } }
-            });
-            
-            if (error) {
-                displayAlert(error.message);
-                submitBtn.disabled = false;
-                submitBtn.innerText = "إنشاء حساب";
-            } else {
-                displayAlert("تم إنشاء الحساب! تفقد بريدك الإلكتروني لتأكيده والتمكن من الدخول.", true);
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: { data: { full_name: displayName, user_name: username } }
+                });
+                
+                if (error) {
+                    displayAlert(error.message);
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "إنشاء حساب";
+                } else {
+                    displayAlert("تم إنشاء الحساب بنجاح! يرجى مراجعة بريدك الإلكتروني لتفعيله.", true);
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "إنشاء حساب";
+                }
+            } catch (err) {
+                displayAlert("حدث خطأ في النظام: " + err.message);
                 submitBtn.disabled = false;
                 submitBtn.innerText = "إنشاء حساب";
             }
