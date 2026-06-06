@@ -4,7 +4,8 @@ import logging
 import yt_dlp
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
-from telegram.request import HTTPXRequest
+from telegram.request import HTTPXRequest  # v21
+
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 
