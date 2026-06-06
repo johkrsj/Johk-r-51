@@ -1,12 +1,12 @@
 import os
 import re
 import logging
+import requests
 import yt_dlp
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
-
 DOWNLOAD_DIR = "/tmp"
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -17,11 +17,33 @@ def extract_url(text):
     return match.group(0) if match else None
 
 
-def is_supported(url):
-    return bool(re.search(r"(tiktok\.com|vm\.tiktok\.com|instagram\.com|instagr\.am)", url))
+def is_tiktok(url):
+    return bool(re.search(r"(tiktok\.com|vm\.tiktok\.com|vt\.tiktok\.com)", url))
 
 
-def download_video(url):
+def is_instagram(url):
+    return bool(re.search(r"(instagram\.com|instagr\.am)", url))
+
+
+def download_tiktok(url):
+    try:
+        api = f"https://tikwm.com/api/?url={url}&hd=1"
+        r = requests.get(api, timeout=30)
+        data = r.json()
+        if data.get("code") == 0:
+            video_url = data["data"].get("hdplay") or data["data"].get("play")
+            if video_url:
+                video_data = requests.get(video_url, timeout=60)
+                filepath = f"{DOWNLOAD_DIR}/tiktok_{os.urandom(4).hex()}.mp4"
+                with open(filepath, "wb") as f:
+                    f.write(video_data.content)
+                return filepath
+    except Exception as e:
+        logger.error(f"TikTok download error: {e}")
+    return None
+
+
+def download_instagram(url):
     ydl_opts = {
         "outtmpl": f"{DOWNLOAD_DIR}/%(id)s.%(ext)s",
         "format": "best[ext=mp4]/best",
@@ -29,15 +51,7 @@ def download_video(url):
         "quiet": True,
         "no_warnings": True,
         "socket_timeout": 60,
-        "http_headers": {
-            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
-            "Referer": "https://www.tiktok.com/",
-        },
-        "extractor_args": {
-            "tiktok": {"app_version": ["v31.0.0"]}
-        },
     }
-
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)
@@ -46,7 +60,7 @@ def download_video(url):
                 filepath = filepath.rsplit(".", 1)[0] + ".mp4"
             return filepath if os.path.exists(filepath) else None
     except Exception as e:
-        logger.error(f"Download error: {e}")
+        logger.error(f"Instagram download error: {e}")
         return None
 
 
@@ -81,14 +95,17 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ ما وجدت رابط، أرسل رابط TikTok أو Instagram")
         return
 
-    if not is_supported(url):
+    if not is_tiktok(url) and not is_instagram(url):
         await update.message.reply_text("❌ الرابط غير مدعوم\nأرسل روابط TikTok أو Instagram فقط")
         return
 
-    platform = "TikTok 🎵" if "tiktok" in url else "Instagram 📸"
+    platform = "TikTok 🎵" if is_tiktok(url) else "Instagram 📸"
     msg = await update.message.reply_text(f"⏳ جاري التحميل من {platform}...")
 
-    filepath = download_video(url)
+    if is_tiktok(url):
+        filepath = download_tiktok(url)
+    else:
+        filepath = download_instagram(url)
 
     if not filepath:
         await msg.edit_text("❌ فشل التحميل، تأكد أن الفيديو عام وحاول مجدداً")
