@@ -31,13 +31,28 @@ def download_tiktok(url):
         r = requests.get(api, timeout=30)
         data = r.json()
         if data.get("code") == 0:
-            video_url = data["data"].get("hdplay") or data["data"].get("play")
+            item = data["data"]
+
+            # كاروسيل صور
+            if item.get("images"):
+                files = []
+                for i, img_url in enumerate(item["images"]):
+                    img_data = requests.get(img_url, timeout=60)
+                    filepath = f"{DOWNLOAD_DIR}/tiktok_img_{i}_{os.urandom(4).hex()}.jpg"
+                    with open(filepath, "wb") as f:
+                        f.write(img_data.content)
+                    files.append(("image", filepath))
+                return files
+
+            # فيديو عادي
+            video_url = item.get("hdplay") or item.get("play")
             if video_url:
                 video_data = requests.get(video_url, timeout=60)
                 filepath = f"{DOWNLOAD_DIR}/tiktok_{os.urandom(4).hex()}.mp4"
                 with open(filepath, "wb") as f:
                     f.write(video_data.content)
-                return filepath
+                return [("video", filepath)]
+
     except Exception as e:
         logger.error(f"TikTok download error: {e}")
     return None
@@ -58,10 +73,11 @@ def download_instagram(url):
             filepath = ydl.prepare_filename(info)
             if not os.path.exists(filepath):
                 filepath = filepath.rsplit(".", 1)[0] + ".mp4"
-            return filepath if os.path.exists(filepath) else None
+            if os.path.exists(filepath):
+                return [("video", filepath)]
     except Exception as e:
         logger.error(f"Instagram download error: {e}")
-        return None
+    return None
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -78,7 +94,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "📖 *طريقة الاستخدام:*\n\n"
-        "1️⃣ انسخ رابط الفيديو\n"
+        "1 انسخ رابط الفيديو\n"
         "2️⃣ أرسله هنا\n"
         "3️⃣ انتظر ثوانٍ وسيصلك الفيديو ✅\n\n"
         "⚠️ *ملاحظات:*\n"
@@ -103,37 +119,42 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg = await update.message.reply_text(f"⏳ جاري التحميل من {platform}...")
 
     if is_tiktok(url):
-        filepath = download_tiktok(url)
+        files = download_tiktok(url)
     else:
-        filepath = download_instagram(url)
+        files = download_instagram(url)
 
-    if not filepath:
+    if not files:
         await msg.edit_text("❌ فشل التحميل، تأكد أن الفيديو عام وحاول مجدداً")
         return
 
     try:
-        if os.path.getsize(filepath) > 50 * 1024 * 1024:
-            await msg.edit_text("❌ الفيديو أكبر من 50MB")
-            return
-
         await msg.edit_text("📤 جاري الإرسال...")
-        with open(filepath, "rb") as f:
-            await update.message.reply_video(
-                video=f,
-                caption=f"✅ {platform}",
-                supports_streaming=True,
-                read_timeout=300,
-                write_timeout=300,
-                connect_timeout=60,
-            )
+
+        for ftype, filepath in files:
+            if os.path.getsize(filepath) > 50 * 1024 * 1024:
+                continue
+            with open(filepath, "rb") as f:
+                if ftype == "image":
+                    await update.message.reply_photo(photo=f)
+                else:
+                    await update.message.reply_video(
+                        video=f,
+                        caption=f"✅ {platform}",
+                        supports_streaming=True,
+                        read_timeout=300,
+                        write_timeout=300,
+                        connect_timeout=60,
+                    )
+
         await msg.delete()
 
     except Exception as e:
         logger.error(f"Send error: {e}")
         await msg.edit_text("❌ حدث خطأ أثناء الإرسال")
     finally:
-        if filepath and os.path.exists(filepath):
-            os.remove(filepath)
+        for _, filepath in files:
+            if os.path.exists(filepath):
+                os.remove(filepath)
 
 
 def main():
