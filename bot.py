@@ -29,7 +29,15 @@ def download_video(url):
         "quiet": True,
         "no_warnings": True,
         "socket_timeout": 60,
+        "http_headers": {
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+            "Referer": "https://www.tiktok.com/",
+        },
+        "extractor_args": {
+            "tiktok": {"app_version": ["v31.0.0"]}
+        },
     }
+
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)
