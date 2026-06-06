@@ -6,7 +6,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from telegram.request import HTTPXRequest
 
-BOT_TOKEN = os.environ.get("8861550652:AAEPnUDydIOtVRMMQvYcTj-oy09BI04Ci7Y", "")
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 
 DOWNLOAD_DIR = "/tmp"
 logging.basicConfig(level=logging.INFO)
